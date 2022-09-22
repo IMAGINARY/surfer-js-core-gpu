@@ -19,22 +19,6 @@ mat = mat * (
 );
 
 
-//the 3 sliders at the left.
-PA.x = 0.55;
-if (PA.y > .4, PA.y = .4);
-if (PA.y < -.4, PA.y = -.4);
-a = smootha((.5 + PA.y/.7));
-
-PB.x = 0.6;
-if (PB.y > .4, PB.y = .4);
-if (PB.y < -.4, PB.y = -.4);
-alpha = ((.4 + PB.y) / .8) * .7 + .3;
-
-PC.x = 0.65;
-if (PC.y > .4, PC.y = .4);
-if (PC.y < -.4, PC.y = -.4);
-zoom = exp(3 * PC.y - 1);
-
 //configuration for the lights in the scene. A light has a position, a gamma-parameter for its shininess and a color
 lightdirs = [
     ray((.0, .0), -100), //enlights parts of the surface which normal points away from the camera
@@ -79,8 +63,3 @@ colorplot(
   );
   color //return value: WebGL uses premultiplied alpha by default for RGBA which is already our internal representation!!!
 ); //render the scene. # is the pixel coordinate
-
-//lines for the sliders
-draw((.55, .4), (.55, -.4), color -> (0, 0, 0));
-draw((.6, .4), (.6, -.4), color -> (0, 0, 0));
-draw((.65, .4), (.65, -.4), color -> (0, 0, 0));

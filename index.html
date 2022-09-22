@@ -15,11 +15,54 @@
       type="text/javascript"
       src="./vendor/CindyJS/v0.8.8/symbolic.js"
     ></script>
+    <style>
+      .slider {
+        width: 20px;
+        height: 500px;
+        writing-mode: bt-lr;
+        -webkit-appearance: slider-vertical;
+      }
+    </style>
   </head>
 
   <body style="font-family: Arial">
     <h1>CindyJS: Raycasting Surfaces</h1>
-    <div id="CSCanvas" style="border: 0px; background-color: #b2b2b2"></div>
+    <div>
+      <div
+        id="CSCanvas"
+        style="display: inline-block; border: 0px; background-color: #b2b2b2"
+      ></div>
+      <input
+        type="range"
+        min="-0.2"
+        value="1.0"
+        max="1.2"
+        step="0.001"
+        class="slider"
+        id="sliderParamA"
+        orient="vertical"
+      />
+      <input
+        type="range"
+        min="0.3"
+        value="1.0"
+        max="1.0"
+        step="0.001"
+        class="slider"
+        id="sliderAlpha"
+        orient="vertical"
+      />
+      <input
+        type="range"
+        min="-2.2"
+        value="-0.7"
+        max="0.2"
+        step="0.001"
+        class="slider"
+        id="sliderZoom"
+        orient="vertical"
+      />
+    </div>
 
     <input
       type="text"

@@ -1,9 +1,16 @@
 const input = document.getElementById("inp");
 
+const sliderParamA = document.getElementById("sliderParamA");
+const sliderAlpha = document.getElementById("sliderAlpha");
+const sliderZoom = document.getElementById("sliderZoom");
+
 async function init() {
   CindyJS.registerPlugin(1, "surfer-js-core-gpu", (api) => {
     api.defineFunction("csinitDone", 0, () => {
       updateImplicitFunction(input.value);
+      updateParamA(sliderParamA.valueAsNumber);
+      updateAlpha(sliderAlpha.valueAsNumber);
+      updateZoom(sliderZoom.valueAsNumber);
     });
   });
   window.cdy = CindyJS.newInstance({
@@ -35,39 +42,10 @@ async function init() {
     },
     animation: { autoplay: true },
     use: ["CindyGL", "symbolic", "surfer-js-core-gpu"],
-    geometry: [
-      {
-        name: "PA",
-        kind: "P",
-        type: "Free",
-        pos: [0.5, 0.37, 1],
-        narrow: true,
-        color: [1, 1, 1],
-        size: 8,
-      },
-      {
-        name: "PB",
-        kind: "P",
-        type: "Free",
-        pos: [0.5, 0.5, 1],
-        narrow: true,
-        color: [1, 1, 1],
-        size: 8,
-      },
-      {
-        name: "PC",
-        kind: "P",
-        type: "Free",
-        pos: [0.5, 0.1, 1],
-        narrow: true,
-        color: [1, 1, 1],
-        size: 8,
-      },
-    ],
     ports: [
       {
         id: "CSCanvas",
-        width: 700,
+        width: 500,
         height: 500,
         transform: [{ visibleRect: [-0.7, -0.5, 0.7, 0.5] }],
       },
@@ -76,12 +54,24 @@ async function init() {
   window.cdy.startup();
 }
 
-function updateImplicitFunction(expr) {
+const updateImplicitFunction = (expr) =>
   cdy.evokeCS("fun(x,y,z) := (" + expr + "); init();");
-}
+const updateParamA = (value) => cdy.evokeCS(`a = ${value};`);
+const updateAlpha = (value) => cdy.evokeCS(`alpha = ${value};`);
+const updateZoom = (value) => cdy.evokeCS(`zoom = exp(${value});`);
 
 init().then();
 
 input.addEventListener("keypress", (event) =>
   event.code === "Enter" ? updateImplicitFunction(input.value) : false
+);
+
+sliderParamA.addEventListener("input", () =>
+  updateParamA(sliderParamA.valueAsNumber)
+);
+sliderAlpha.addEventListener("input", () =>
+  updateAlpha(sliderAlpha.valueAsNumber)
+);
+sliderZoom.addEventListener("input", () =>
+  updateZoom(sliderZoom.valueAsNumber)
 );
