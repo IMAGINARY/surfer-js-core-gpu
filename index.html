@@ -365,9 +365,6 @@
         color //return value
       ); //render the scene. # is the pixel coordinate
       
-      
-      drawtext((-.65, -.45), "degree: $" + if(newN<100,newN,"\infty") +"$");
-
       //lines for the sliders
       draw((.55, .4), (.55, -.4), color -> (0, 0, 0));
       draw((.6, .4), (.6, -.4), color -> (0, 0, 0));
@@ -380,7 +377,7 @@
           var cdy = CindyJS({canvasname:"CSCanvas",
                       scripts: "cs*",
                       animation: {autoplay: true},
-                      use : ["CindyGL","katex", "symbolic"],
+                      use : ["CindyGL", "symbolic"],
                       geometry: [ { name:"PA", kind:"P", type:"Free", pos: [.5,.37,1], narrow: true, color: [1,1,1], size:8 },
                                   { name:"PB", kind:"P", type:"Free", pos: [.5,.5,1], narrow: true, color: [1,1,1], size:8 },
                                   { name:"PC", kind:"P", type:"Free", pos: [.5,.1,1], narrow: true, color: [1,1,1], size:8 } ],
