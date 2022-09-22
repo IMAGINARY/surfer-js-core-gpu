@@ -105,6 +105,7 @@ dF(p) := (p=p/zoom; (
 
 //update the color color for the pixel at position pixel assuming that the surface has been intersected at ray(pixel, dst)
 //because of the alpha-transparency updatecolor should be called for the intersections with large dst first
+// color is a float[4] representing RGBA with premultiplied alpha
 updatecolor(pixel, dst, color) := (
   regional(x, normal);
   x = ray(pixel, dst); //the intersection point in R^3
@@ -113,12 +114,13 @@ updatecolor(pixel, dst, color) := (
   normal = dF(x);
   normal = normal / |normal|;
 
+  colorHit = (0., 0., 0.);
   forall(1..length(lightdirs),
     //illuminate if the normal and lightdir point in the same direction
     illumination = max(0, (lightdirs_# / abs(lightdirs_#)) * normal);
-    color = color + alpha * (illumination ^ gamma_#) * colors_#;
+    colorHit = colorHit + alpha * (illumination ^ gamma_#) * colors_#;
   );
-  color
+  color = color + (colorHit_1, colorHit_2, colorHit_3, alpha);
 );
 
 
@@ -184,6 +186,7 @@ next(id) := (
 );
 
 //what color should be given to pixel with pixel-coordinate pixel (vec2)
+// color is a float[4] representing RGBA with premultiplied alpha
 computeColor(pixel, l, u, color) := (
   regional(a, b);
   //traverse binary tree (DFS) using heap-indices
