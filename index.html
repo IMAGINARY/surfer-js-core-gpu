@@ -60,7 +60,7 @@
       S(r) := (r * r - 1);
       
       //fun is the user defined trivariate polynomial
-      fun(x, y, z) := (x ^ 2 + y ^ 2 + z ^ 2 - (0.5 + a) ^ 2) ^ 2 - (3.0 * ((0.5 + a) ^ 2) - 1.0) / (3.0 - ((0.5 + a) ^ 2)) * (1 - z - sqrt(2) * x) * (1 - z + sqrt(2) * x) * (1 + z + sqrt(2) * y) * (1 + z - sqrt(2) * y);
+      fun(x, y, z) := x^2 + 1;
       
       //F takes vec3 instead of 3 variables
       F(p) := (p=p/zoom;fun(p.x, p.y, p.z));
@@ -115,7 +115,6 @@
           )
           
       );
-      init();
       
       //B3 is a matrix that interpolates quadratic polynomials (in monomial basis), given the values [p(-2), p(0), p(2)]
       B3 = inverse(apply([-2, 0, 2], c, apply(0 .. 2, i, c ^ i))); 
@@ -206,6 +205,8 @@
         );
         if(id==1, 0, id) //return value - id 0 means we stop our DFS
       );
+      
+      csinitDone();
       </script>
       
       <script id="csdraw" type="text/x-cindyscript">
@@ -373,11 +374,19 @@
 
       <div  id="CSCanvas" style="border:0px"></div>
       
+      <input type="text" id="inp" value="(x^2+y^2+z^2-(0.5+a)^2)^2-(3*((0.5+a)^2)-1)/(3-((0.5+a)^2))*(1-z-sqrt(2)*x)*(1-z+sqrt(2)*x)*(1+z+sqrt(2)*y)*(1+z-sqrt(2)*y)" size="60">
+      
       <script type="text/javascript">
+          const input = document.getElementById('inp');
+          CindyJS.registerPlugin(1, "surfer-js-core-gpu", (api) => {
+            api.defineFunction("csinitDone", 0, () => {
+              updateImplicitFunction(input.value);
+            });
+          });
           var cdy = CindyJS({canvasname:"CSCanvas",
                       scripts: "cs*",
                       animation: {autoplay: true},
-                      use : ["CindyGL", "symbolic"],
+                      use : ["CindyGL", "symbolic", "surfer-js-core-gpu"],
                       geometry: [ { name:"PA", kind:"P", type:"Free", pos: [.5,.37,1], narrow: true, color: [1,1,1], size:8 },
                                   { name:"PB", kind:"P", type:"Free", pos: [.5,.5,1], narrow: true, color: [1,1,1], size:8 },
                                   { name:"PC", kind:"P", type:"Free", pos: [.5,.1,1], narrow: true, color: [1,1,1], size:8 } ],
@@ -388,7 +397,12 @@
                         transform: [ { visibleRect: [ -0.7, -0.5, 0.7, 0.5 ] } ]
                       }]
           });
+        
+          function updateImplicitFunction(expr) {
+            cdy.evokeCS('fun(x,y,z) := (' + expr + '); init();');
+          }
+          
+          input.addEventListener('keypress', (event) => event.code === 'Enter' ? updateImplicitFunction(input.value) : false);
       </script>
-      <input type="text" id="inp" value="(x^2+y^2+z^2-(0.5+a)^2)^2-(3*((0.5+a)^2)-1)/(3-((0.5+a)^2))*(1-z-sqrt(2)*x)*(1-z+sqrt(2)*x)*(1+z+sqrt(2)*y)*(1+z-sqrt(2)*y)"  onkeypress="if((event.which ? event.which : event.keyCode)==13) { cdy.evokeCS('fun(x,y,z) := (' + this.value + '); init();'); }" size="60">
   </body>
 </html>
