@@ -58,7 +58,7 @@ const updateImplicitFunction = (expr) =>
   cdy.evokeCS("fun(x,y,z) := (" + expr + "); init();");
 const updateParamA = (value) => cdy.evokeCS(`a = ${value};`);
 const updateAlpha = (value) => cdy.evokeCS(`alpha = ${value};`);
-const updateZoom = (value) => cdy.evokeCS(`zoom = exp(${value});`);
+const updateZoom = (value) => cdy.evokeCS(`zoom = 2^(${value});`);
 
 init().then();
 
