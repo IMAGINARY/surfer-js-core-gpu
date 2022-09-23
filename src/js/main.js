@@ -47,7 +47,7 @@ async function init() {
     ports: [
       {
         element: canvas,
-        transform: [{ visibleRect: [-0.5, -0.5, 0.5, 0.5] }],
+        transform: [{ visibleRect: [-0.51, -0.51, 0.51, 0.51] }],
       },
     ],
   });
