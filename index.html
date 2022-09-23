@@ -15,6 +15,12 @@
       src="./vendor/CindyJS/v0.8.8/symbolic.js"
     ></script>
     <style>
+      #canvas {
+        width: 500px;
+        height: 500px;
+        display: inline-block;
+      }
+
       .slider {
         width: 20px;
         height: 500px;
@@ -26,10 +32,7 @@
 
   <body style="font-family: Arial">
     <div>
-      <div
-        id="CSCanvas"
-        style="display: inline-block; border: 0px;"
-      ></div>
+      <canvas id="canvas"></canvas>
       <input
         type="range"
         min="-0.2"

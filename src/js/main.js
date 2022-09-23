@@ -1,3 +1,5 @@
+const canvas = document.getElementById("canvas");
+
 const input = document.getElementById("inp");
 
 const sliderParamA = document.getElementById("sliderParamA");
@@ -44,10 +46,8 @@ async function init() {
     use: ["CindyGL", "symbolic", "surfer-js-core-gpu"],
     ports: [
       {
-        id: "CSCanvas",
-        width: 500,
-        height: 500,
-        transform: [{ visibleRect: [-0.7, -0.5, 0.7, 0.5] }],
+        element: canvas,
+        transform: [{ visibleRect: [-0.5, -0.5, 0.5, 0.5] }],
       },
     ],
   });
