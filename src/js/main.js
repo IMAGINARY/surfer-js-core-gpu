@@ -1,4 +1,4 @@
-const canvas = document.getElementById("canvas");
+const container = document.getElementById("container");
 
 const input = document.getElementById("inp");
 
@@ -6,17 +6,25 @@ const sliderParamA = document.getElementById("sliderParamA");
 const sliderAlpha = document.getElementById("sliderAlpha");
 const sliderZoom = document.getElementById("sliderZoom");
 
-async function init() {
+async function init(element) {
+  const canvas = element.ownerDocument.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 512;
+  element.appendChild(canvas);
   CindyJS.registerPlugin(1, "surfer-js-core-gpu", (api) => {
     api.defineFunction("csinitDone", 0, () => {
       updateImplicitFunction(input.value);
       updateParamA(sliderParamA.valueAsNumber);
       updateAlpha(sliderAlpha.valueAsNumber);
       updateZoom(sliderZoom.valueAsNumber);
+      updateAspectRatio(canvas);
+
+      // keep the
+      const resizeObserver = new ResizeObserver(() => updateAspectRatio(canvas));
+      resizeObserver.observe(canvas);
     });
   });
   window.cdy = CindyJS.newInstance({
-    canvasname: "CSCanvas",
     scripts: {
       init: await (
         await fetch(
@@ -52,6 +60,7 @@ async function init() {
     ],
   });
   window.cdy.startup();
+  return canvas.parentElement;
 }
 
 const updateImplicitFunction = (expr) =>
@@ -60,7 +69,7 @@ const updateParamA = (value) => cdy.evokeCS(`a = ${value};`);
 const updateAlpha = (value) => cdy.evokeCS(`alpha = ${value};`);
 const updateZoom = (value) => cdy.evokeCS(`zoom = 2^(${value});`);
 
-init().then();
+init(container).then((div) => div.classList.add("surface"));
 
 input.addEventListener("keypress", (event) =>
   event.code === "Enter" ? updateImplicitFunction(input.value) : false
@@ -75,3 +84,8 @@ sliderAlpha.addEventListener("input", () =>
 sliderZoom.addEventListener("input", () =>
   updateZoom(sliderZoom.valueAsNumber)
 );
+
+function updateAspectRatio(canvas) {
+  const aspectRatio = canvas.width / canvas.height;
+  cdy.evokeCS(`aspectRatio = ${aspectRatio};`);
+}

@@ -27,6 +27,7 @@ N = 5;
 zoom = 2.2;
 a = 0.3;
 alpha = .7;
+aspectRatio = 1.0;
 
 //we stand at position mat*(0, 0, -2.2) and watch to (0,0,0).
 //ray(pixel, t) is the point in R^3 that lies at position t the ray behind the pixel at location pixel(vec2)

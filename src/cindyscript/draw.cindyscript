@@ -1,3 +1,6 @@
+gsave();
+if(aspectRatio > 1.0,scale(1.0/aspectRatio));
+
 //the following is executed for every rendered frame
 if (dragging,
     dx = 3 * (sx - mouse().x); dy = 3 * (sy - mouse().y);,
@@ -63,3 +66,5 @@ colorplot(
   );
   color //return value: WebGL uses premultiplied alpha by default for RGBA which is already our internal representation!!!
 ); //render the scene. # is the pixel coordinate
+
+grestore();
