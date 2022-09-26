@@ -23,11 +23,19 @@ CindyJS.registerPlugin(1, 'surfer-js-core-gpu', (api) => {
 });
 
 export default class SurferCoreGpu {
-  private readonly cdy: CindyJS;
+  protected readonly cdy: CindyJS;
 
   public readonly element: HTMLElement;
 
   public readonly canvas: HTMLCanvasElement;
+
+  protected expression = 'x^2 - 1';
+
+  protected alpha = 1.0;
+
+  protected zoom = 1.0;
+
+  protected parameters: { [key: string]: number } = {};
 
   private constructor(
     cdy: CindyJS,
@@ -37,24 +45,60 @@ export default class SurferCoreGpu {
     this.cdy = cdy;
     this.element = element;
     this.canvas = canvas;
+
+    this.setExpression(this.expression);
+    this.setAlpha(this.alpha);
+    this.setZoom(this.zoom);
+
+    Object.entries(this.parameters).forEach(([name, value]) =>
+      this.setParameter(name, value),
+    );
+  }
+
+  getExpression(): string {
+    return this.expression;
+  }
+
+  getAlpha(): number {
+    return this.alpha;
+  }
+
+  getZoom(): number {
+    return this.zoom;
+  }
+
+  getParameter(name: string): number | undefined {
+    return this.parameters[name];
+  }
+
+  getParameters(): { [key: string]: number } {
+    return { ...this.parameters };
+  }
+
+  getParameterNames(): string[] {
+    return Object.keys(this.parameters);
   }
 
   setExpression(expression: string): this {
+    this.expression = expression;
     this.cdy.evokeCS(`fun(x,y,z) := (${expression}); init();`);
     return this;
   }
 
   setAlpha(alpha: number): this {
+    this.alpha = alpha;
     this.cdy.evokeCS(`alpha = (${alpha});`);
     return this;
   }
 
   setZoom(zoom: number): this {
+    this.zoom = zoom;
     this.cdy.evokeCS(`zoom = (${zoom});`);
     return this;
   }
 
   setParameter(name: string, value: number): this {
+    this.parameters[name] = value;
     this.cdy.evokeCS(`${name} = (${value});`);
     return this;
   }
