@@ -51,6 +51,17 @@ The `SurferGpuCore` object exposes two internal elements:
   CSS properties such as background color, width and height can be applied to
   this element.
 
+## Bundled CindyJS
+
+This package uses the [CindyJS](https://cindyjs.org) package internally. Since
+CindyJS is not published through NPM, you can either add the libraries from the
+`vendor` folder to your project manually (via `<script>` tags), or you change
+your imports to
+
+```typescript
+import '@imaginary-maths/surfer-core-gpu/dist/surfer-core-gpu-bundled-cindyjs';
+```
+
 # Demo
 
 <iframe src="demo.html" width="100%" height="700"></iframe>
