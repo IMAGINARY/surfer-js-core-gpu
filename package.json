@@ -38,6 +38,7 @@
       "context": "browser",
       "optimize": true,
       "isLibrary": true,
+      "includeNodeModules": true,
       "engines": {
         "browsers": "> 0.2% and not dead and supports webgl2"
       }
@@ -46,6 +47,7 @@
       "context": "browser",
       "optimize": true,
       "isLibrary": true,
+      "includeNodeModules": true,
       "engines": {
         "browsers": "> 0.2% and not dead and supports webgl2"
       }
@@ -56,6 +58,7 @@
       "isLibrary": true,
       "outputFormat": "commonjs",
       "optimize": false,
+      "includeNodeModules": true,
       "engines": {
         "browsers": "> 0.2% and not dead and supports webgl2"
       }
@@ -66,6 +69,7 @@
       "isLibrary": true,
       "outputFormat": "commonjs",
       "optimize": true,
+      "includeNodeModules": true,
       "engines": {
         "browsers": "> 0.2% and not dead and supports webgl2"
       }
@@ -76,6 +80,7 @@
       "isLibrary": true,
       "outputFormat": "esmodule",
       "optimize": false,
+      "includeNodeModules": true,
       "engines": {
         "browsers": "> 0.2% and not dead and supports webgl2"
       }
@@ -86,14 +91,23 @@
       "isLibrary": true,
       "outputFormat": "esmodule",
       "optimize": true,
+      "includeNodeModules": true,
       "engines": {
         "browsers": "> 0.2% and not dead and supports webgl2"
       }
     },
     "types": {}
   },
+  "alias": {
+    "process": false,
+    "CindyJS": {
+      "global": "CindyJS"
+    }
+  },
   "devDependencies": {
     "@parcel/packager-ts": "^2.7.0",
+    "@parcel/transformer-inline-string": "^2.7.0",
+    "@parcel/transformer-typescript-tsc": "^2.7.0",
     "@parcel/transformer-typescript-types": "^2.7.0",
     "@typescript-eslint/eslint-plugin": "^5.15.0",
     "@typescript-eslint/parser": "^5.15.0",

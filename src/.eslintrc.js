@@ -8,6 +8,9 @@ module.exports = {
         browser: true,
         es6: true,
       },
+      globals: {
+        CindyJS: 'readonly',
+      },
       parser: '@typescript-eslint/parser',
       parserOptions: {
         ecmaVersion: 2021,

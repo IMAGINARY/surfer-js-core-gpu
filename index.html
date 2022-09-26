@@ -74,6 +74,42 @@
       size="60"
     />
 
-    <script src="src/js/main.js" type="text/javascript"></script>
+    <script type="module">
+      import SurferCoreGpu from './dist/surfer-core-gpu-bundled-cindyjs.mjs';
+
+      const container = document.getElementById('container');
+
+      const input = document.getElementById('inp');
+
+      const sliderParamA = document.getElementById('sliderParamA');
+      const sliderAlpha = document.getElementById('sliderAlpha');
+      const sliderZoom = document.getElementById('sliderZoom');
+
+      async function init() {
+        const surferCoreGpu = await SurferCoreGpu.create(container, 512, 512);
+        surferCoreGpu.setExpression(input.value);
+        surferCoreGpu.setParameter('a', sliderParamA.valueAsNumber);
+        surferCoreGpu.setZoom(Math.pow(2, sliderZoom.valueAsNumber));
+        surferCoreGpu.setAlpha(sliderAlpha.valueAsNumber);
+        surferCoreGpu.element.classList.add('surface');
+        console.log(surferCoreGpu);
+
+        input.addEventListener('keypress', (event) =>
+          event.code === 'Enter'
+            ? surferCoreGpu.setExpression(input.value)
+            : false,
+        );
+        sliderParamA.addEventListener('input', () =>
+          surferCoreGpu.setParameter('a', sliderParamA.valueAsNumber),
+        );
+        sliderAlpha.addEventListener('input', () =>
+          surferCoreGpu.setAlpha(sliderAlpha.valueAsNumber),
+        );
+        sliderZoom.addEventListener('input', () =>
+          surferCoreGpu.setZoom(Math.pow(2, sliderZoom.valueAsNumber)),
+        );
+      }
+      init().then();
+    </script>
   </body>
 </html>
