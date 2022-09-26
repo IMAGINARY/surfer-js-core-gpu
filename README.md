@@ -4,6 +4,8 @@ This package provides a WebGL (actually, CindyJS and CindyGL) based renderer for
 algebraic surfaces. It can also be used for other types of implicit surfaces.
 However, the quality of the results may vary a lot.
 
+Check out the [demo](https://imaginary.github.io/surfer-js-core-gpu/demo.html).
+
 ## Usage
 
 Add the package to your project:
@@ -61,10 +63,6 @@ your imports to
 ```typescript
 import '@imaginary-maths/surfer-core-gpu/dist/surfer-core-gpu-bundled-cindyjs';
 ```
-
-# Demo
-
-<iframe src="demo.html" width="100%" height="700"></iframe>
 
 # Build
 
