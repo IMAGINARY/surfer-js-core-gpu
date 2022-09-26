@@ -1,0 +1,117 @@
+{
+  "name": "surfer-js-core-gpu",
+  "version": "0.0.0",
+  "description": "A WebGL-based implicit surface render",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IMAGINARY/surfer-js-core-gpu.git"
+  },
+  "author": {
+    "name": "Christian Stussak",
+    "email": "christian.stussak@imaginary.org"
+  },
+  "contributors": [
+    "Aaron Montag"
+  ],
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/IMAGINARY/surfer-js-core-gpu/issues"
+  },
+  "homepage": "https://github.com/IMAGINARY/surfer-js-core-gpu#readme",
+  "engines": {
+    "npm": ">=8.0.0",
+    "node": ">=16.0.0"
+  },
+  "browserslist": [
+    "> 0.2% and not dead and supports webgl2"
+  ],
+  "source": "src/ts/index.ts",
+  "main": "dist/surfer-core-gpu.js",
+  "module": "dist/surfer-core-gpu.mjs",
+  "target-bundled-cindyjs": "dist/surfer-core-gpu-bundled-cindyjs.js",
+  "target-bundled-cindyjs-min": "dist/surfer-core-gpu-bundled-cindyjs.min.js",
+  "target-bundled-cindyjs-module": "dist/surfer-core-gpu-bundled-cindyjs.mjs",
+  "target-bundled-cindyjs-module-min": "dist/surfer-core-gpu-bundled-cindyjs.min.mjs",
+  "types": "dist/surfer-core-gpu.d.ts",
+  "targets": {
+    "main": {
+      "context": "browser",
+      "optimize": true,
+      "isLibrary": true,
+      "engines": {
+        "browsers": "> 0.2% and not dead and supports webgl2"
+      }
+    },
+    "module": {
+      "context": "browser",
+      "optimize": true,
+      "isLibrary": true,
+      "engines": {
+        "browsers": "> 0.2% and not dead and supports webgl2"
+      }
+    },
+    "target-bundled-cindyjs": {
+      "source": "src/ts/index-bundled-cindyjs.ts",
+      "context": "browser",
+      "isLibrary": true,
+      "outputFormat": "commonjs",
+      "optimize": false,
+      "engines": {
+        "browsers": "> 0.2% and not dead and supports webgl2"
+      }
+    },
+    "target-bundled-cindyjs-min": {
+      "source": "src/ts/index-bundled-cindyjs.ts",
+      "context": "browser",
+      "isLibrary": true,
+      "outputFormat": "commonjs",
+      "optimize": true,
+      "engines": {
+        "browsers": "> 0.2% and not dead and supports webgl2"
+      }
+    },
+    "target-bundled-cindyjs-module": {
+      "source": "src/ts/index-bundled-cindyjs.ts",
+      "context": "browser",
+      "isLibrary": true,
+      "outputFormat": "esmodule",
+      "optimize": false,
+      "engines": {
+        "browsers": "> 0.2% and not dead and supports webgl2"
+      }
+    },
+    "target-bundled-cindyjs-module-min": {
+      "source": "src/ts/index-bundled-cindyjs.ts",
+      "context": "browser",
+      "isLibrary": true,
+      "outputFormat": "esmodule",
+      "optimize": true,
+      "engines": {
+        "browsers": "> 0.2% and not dead and supports webgl2"
+      }
+    },
+    "types": {}
+  },
+  "devDependencies": {
+    "@parcel/packager-ts": "^2.7.0",
+    "@parcel/transformer-typescript-types": "^2.7.0",
+    "@typescript-eslint/eslint-plugin": "^5.15.0",
+    "@typescript-eslint/parser": "^5.15.0",
+    "eslint": "^8.11.0",
+    "eslint-config-airbnb-typescript": "^16.1.2",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-compat": "^4.0.2",
+    "eslint-plugin-import": "^2.25.4",
+    "parcel": "2.7.0",
+    "prettier": "^2.7.1",
+    "typescript": "~4.7.0"
+  },
+  "dependencies": {
+    "@swc/helpers": "^0.4.11"
+  },
+  "scripts": {
+    "watch": "parcel watch",
+    "build": "parcel build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
