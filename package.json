@@ -1,5 +1,5 @@
 {
-  "name": "surfer-js-core-gpu",
+  "name": "@imaginary-maths/surfer-core-gpu",
   "version": "0.0.0",
   "description": "A WebGL-based implicit surface render",
   "repository": {
