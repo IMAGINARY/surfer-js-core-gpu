@@ -105,8 +105,8 @@ export default class SurferCoreGpu {
 
   static async create(
     container: HTMLElement,
-    width: number,
-    height: number,
+    width = 256,
+    height = 256,
   ): Promise<SurferCoreGpu> {
     const canvas = container.ownerDocument.createElement('canvas');
     canvas.width = width;
