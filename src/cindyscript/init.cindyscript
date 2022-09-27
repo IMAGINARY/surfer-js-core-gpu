@@ -200,7 +200,7 @@ computeColor(pixel, l, u, color) := (
 
       //how many sign changes has F(ray(pixel, ·)) in (a,b)?
       cnt = nsign(pixel, a, b);
-      if(cnt == 1 % (b-a)<1e-4, //in this case we found a root (or it is likely to have a multiple root)
+      if(cnt == 1, // in this case we found a root (or it is likely to have a multiple root)
         //=>colorize and break DFS
         color = updatecolor(pixel, bisectf(pixel, a, b), color);
         if(findAllRoots,
