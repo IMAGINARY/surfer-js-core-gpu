@@ -45,6 +45,27 @@ s.getParameters();
 // { a: 1.0 }
 ```
 
+Some elements of the intersection algorithm can be tweaked as well:
+
+```typescript
+const PolynomialInterpolation =
+  SurferCoreGpu.Algorithms.PolynomialInterpolation;
+
+// For some non-algebraic functions, Chebyshev nodes yield better results.
+// Explictly set the maximum degree of the interpolating function for experimentation.
+const algorithm0 = new PolynomialInterpolation(
+  PolynomialInterpolation.nodeGeneratorChebyshev(),
+  11,
+);
+s.setAlgorithm(algorithm);
+
+// Equidistant nodes are the default and yield good results if the zoom parameter is rather small.
+const algorithm1 = new PolynomialInterpolation(
+  PolynomialInterpolation.nodeGeneratorEquidistant(),
+);
+s.setAlgorithm(algorithm1);
+```
+
 The `SurferGpuCore` object exposes two internal elements:
 
 - `canvas`: A `HTMLCanvasElement` that is used for drawing the surface. This

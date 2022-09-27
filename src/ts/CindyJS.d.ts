@@ -5,15 +5,6 @@
  * Just enough to silence the TypeScript compiler.
  */
 
-interface ApiV1 {
-  instance: CindyJS;
-  defineFunction(
-    name: string,
-    numArgs: number,
-    fun: (...args: unknown[]) => unknown,
-  ): void;
-}
-
 type InstanceOptions = {
   scripts: string | { [key: string]: string };
   animation: { autoplay: boolean };
@@ -33,6 +24,16 @@ declare interface CindyJS {
 }
 
 declare namespace CindyJS {
+  interface ApiV1 {
+    instance: CindyJS;
+    evaluateAndVal<T>(expr: unknown): T;
+    defineFunction(
+      name: string,
+      numArgs: number,
+      fun: (...args: never[]) => unknown,
+    ): void;
+  }
+
   function registerPlugin(
     apiVersion: number,
     name: string,
@@ -40,4 +41,16 @@ declare namespace CindyJS {
   ): void;
 
   function newInstance(instanceOptions: InstanceOptions): CindyJS;
+
+  type Number = {
+    ctype: 'number';
+    value: {
+      real: number;
+      imag: number;
+    };
+  };
+  type List<T> = {
+    ctype: 'list';
+    value: T;
+  };
 }

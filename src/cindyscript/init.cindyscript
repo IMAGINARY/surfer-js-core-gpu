@@ -7,7 +7,8 @@ mat = [
 sx = mouse().x;
 sy = mouse().y;
 dragging = false;
-N = 5;
+N = 5; // degree of the surface; will be overwritten
+li = []; // nodes for interpolation; will be overwritten
 zoom = 2.2;
 a = 0.3;
 alpha = .7;
@@ -44,29 +45,28 @@ casteljau(poly, x) := (
 //evaluates a polynomial, represented as vector of coefficients in bernstein-form
 eval(poly, x) := casteljau(poly, x)_1;
 
+Infinity = 1e100000;
+
 //this function has to be called whenever fun changes
 init() := (
   dx = .05; dy =.02;
   diff(fun(x,y,z), x, dxF(x,y,z) := #);
   diff(fun(x,y,z), y, dyF(x,y,z) := #);
   diff(fun(x,y,z), z, dzF(x,y,z) := #);
-  
-    newN = degree(fun(x,y,z), x, y, z);
-    if(newN==-1, newN=1000);
-    if(newN!=N,
-      N = newN;
-      //The following line is DIRTY, but it makes the application run smooth for high degrees. :-)
-      //Nethertheless, it might cause render errors for high degree surfaces. In fact, only a subset of the surface is rendered.
-      //Adapt limit according to hardware.
-      //values of kind 4*n-1 are good values, as it means to use vectors of length 4*n.
-      N = min(N,7); 
-      
-      //N+1 Chebyshev nodes for interval (0, 1)
-      li = apply(1..(N+1), k, (cos((2 * k - 1) / (2 * (N+1)) * pi)+1)/2);
-      
-      //A is the matrix of the linear map that evaluates a polynomial in bernstein-form at the Chebyshev nodes
+
+    N = degree(fun(x,y,z), x, y, z);
+    if(N == -1, N=Infinity);
+    print("Surface degree: " + text(N));
+    newLi = getInterpolationNodes(N);
+    N = length(newLi) - 1;
+    print("Degree of interpolating polynomial: " + text(N));
+    print("Interpolation nodes: " + text(newLi));
+
+    if(newLi != li,
+      li = newLi;
+      //A is the matrix of the linear map that evaluates a polynomial in bernstein-form at the interpolation nodes
       A = apply(li, node,
-        //the i-th column contains the values of the (i,N) bernstein polynomial evaluated at the Chebyshev nodes
+        //the i-th column contains the values of the (i,N) bernstein polynomial evaluated at the interpolation nodes
         apply(0..N, i, eval(
           apply(0..N, if(#==i,1,0)), // e_i = [0,0,0,1,0,0]
           node //evaluate  b_(i,N)(node)
@@ -75,7 +75,6 @@ init() := (
       
       B = (inverse(A)); //B interpolates polynomials (in Bernstein basis), given the values [p(li_1), p(li_2), ...]
     )
-    
 );
 
 //B3 is a matrix that interpolates quadratic polynomials (in monomial basis), given the values [p(-2), p(0), p(2)]
@@ -178,7 +177,7 @@ computeColor(pixel, l, u, color) := (
   //1 is root node and node v has children 2*v and 2*v+1
   id = 1; 
   //maximum number of steps
-  repeat(min(newN*8,80),
+  repeat(min(N*8,80),
     //id=0 means we are done; do only a DFS-step if we are not finished yet
     if(id>0,
       s = gets(id); //s = floor(log_2(id))

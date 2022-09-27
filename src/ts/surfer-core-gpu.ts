@@ -5,29 +5,36 @@ import csDraw from 'bundle-text:../cindyscript/draw.cindyscript';
 import csMouseDown from 'bundle-text:../cindyscript/mousedown.cindyscript';
 import csMouseUp from 'bundle-text:../cindyscript/mouseup.cindyscript';
 
+import PolynomialInterpolation from './algorithms/polynomial-interpolation';
+
 const csInit = `${csInitPrefix}; csInitDone();`;
 
 const cdyInstanceDataMap = new Map<
   CindyJS,
-  { onInit: (cdy: CindyJS) => void }
+  { onInit: (api: CindyJS.ApiV1) => void }
 >();
 
 CindyJS.registerPlugin(1, 'surfer-js-core-gpu', (api) => {
   const cdy = api.instance;
-  const onInit = cdyInstanceDataMap.get(cdy)?.onInit;
+  const cdyData = cdyInstanceDataMap.get(cdy);
 
-  if (typeof onInit === 'undefined')
+  if (typeof cdyData === 'undefined')
     throw new Error('Unknown CindyJS instance.');
 
-  api.defineFunction('csInitDone', 0, () => onInit(cdy));
+  const { onInit } = cdyData;
+  api.defineFunction('csInitDone', 0, () => onInit(api));
 });
 
 export default class SurferCoreGpu {
+  protected readonly api: CindyJS.ApiV1;
+
   protected readonly cdy: CindyJS;
 
   public readonly element: HTMLElement;
 
   public readonly canvas: HTMLCanvasElement;
+
+  protected algorithm: PolynomialInterpolation;
 
   protected expression = 'x^2 - 1';
 
@@ -37,15 +44,29 @@ export default class SurferCoreGpu {
 
   protected parameters: { [key: string]: number } = {};
 
+  public static readonly Algorithms: {
+    readonly PolynomialInterpolation: typeof PolynomialInterpolation;
+  } = {
+    PolynomialInterpolation,
+  };
+
   private constructor(
-    cdy: CindyJS,
+    api: CindyJS.ApiV1,
     element: HTMLElement,
     canvas: HTMLCanvasElement,
   ) {
-    this.cdy = cdy;
+    this.api = api;
+    this.cdy = api.instance;
     this.element = element;
     this.canvas = canvas;
 
+    const interpolationNodeGenerator =
+      PolynomialInterpolation.nodeGeneratorChebyshev();
+    this.algorithm = new PolynomialInterpolation(interpolationNodeGenerator, 7);
+
+    this.defineCindyScriptFunctions();
+
+    this.setAlgorithm(this.algorithm);
     this.setExpression(this.expression);
     this.setAlpha(this.alpha);
     this.setZoom(this.zoom);
@@ -53,6 +74,28 @@ export default class SurferCoreGpu {
     Object.entries(this.parameters).forEach(([name, value]) =>
       this.setParameter(name, value),
     );
+  }
+
+  private defineCindyScriptFunctions(): void {
+    const toCSTypeListOfNumbers = (a: number[]) => ({
+      ctype: 'list',
+      value: a.map((e) => ({ ctype: 'number', value: { real: e, imag: 0 } })),
+    });
+    const getInterpolationNodesCS = (args: unknown[]) => {
+      const degree = this.api.evaluateAndVal<CindyJS.Number>(args[0]).value
+        .real;
+      const nodes = this.getAlgorithm().generateNodes(degree);
+      return toCSTypeListOfNumbers(nodes);
+    };
+    this.api.defineFunction(
+      'getInterpolationNodes',
+      1,
+      getInterpolationNodesCS,
+    );
+  }
+
+  getAlgorithm(): PolynomialInterpolation {
+    return this.algorithm;
   }
 
   getExpression(): string {
@@ -103,6 +146,11 @@ export default class SurferCoreGpu {
     return this;
   }
 
+  setAlgorithm(algorithm: PolynomialInterpolation) {
+    this.algorithm = algorithm;
+    this.cdy.evokeCS(`init();`);
+  }
+
   static async create(
     container: HTMLElement,
     width = 256,
@@ -131,14 +179,12 @@ export default class SurferCoreGpu {
     });
 
     return new Promise<SurferCoreGpu>((resolve) => {
-      const onInit = () => {
+      const onInit = (api: CindyJS.ApiV1) => {
         const element = canvas.parentElement;
         if (element === null)
           throw new Error(
             'Something went wrong during startup of Cinderella applet',
           );
-
-        const surferCoreGpu = new SurferCoreGpu(cdy, element, canvas);
 
         // keep the internal and external aspect ratio in sync
         const resizeObserver = new ResizeObserver(() => {
@@ -147,6 +193,7 @@ export default class SurferCoreGpu {
         });
         resizeObserver.observe(canvas);
 
+        const surferCoreGpu = new SurferCoreGpu(api, element, canvas);
         resolve(surferCoreGpu);
       };
 
