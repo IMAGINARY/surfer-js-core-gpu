@@ -38,6 +38,8 @@ export default class SurferCoreGpu {
 
   protected expression = 'x^2 - 1';
 
+  protected twoSided = true;
+
   protected alpha = 1.0;
 
   protected zoom = 1.0;
@@ -68,6 +70,7 @@ export default class SurferCoreGpu {
 
     this.setAlgorithm(this.algorithm);
     this.setExpression(this.expression);
+    this.setTwoSided(this.twoSided);
     this.setAlpha(this.alpha);
     this.setZoom(this.zoom);
 
@@ -102,6 +105,10 @@ export default class SurferCoreGpu {
     return this.expression;
   }
 
+  getTwoSided(): boolean {
+    return this.twoSided;
+  }
+
   getAlpha(): number {
     return this.alpha;
   }
@@ -125,6 +132,12 @@ export default class SurferCoreGpu {
   setExpression(expression: string): this {
     this.expression = expression;
     this.cdy.evokeCS(`fun(x,y,z) := (${expression}); init();`);
+    return this;
+  }
+
+  setTwoSided(hasTwoSides: boolean): this {
+    this.twoSided = hasTwoSides;
+    this.cdy.evokeCS(`hasTwoSides = (${hasTwoSides ? 'true' : 'false'});`);
     return this;
   }
 

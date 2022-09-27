@@ -28,6 +28,9 @@ s.setExpression('x^2+y^2+z^2+x*y*z-4*a');
 s.setAlpha(0.75);
 s.setZoom(0.1);
 s.setParameter('a', 1);
+
+// For translucent surfaces, having the same material for both sides often looks better.
+s.setTwoSided(false);
 ```
 
 Some getters are also available:
@@ -43,6 +46,8 @@ s.getParameterNames();
 // ["a"]
 s.getParameters();
 // { a: 1.0 }
+s.getTwoSided();
+// false
 ```
 
 Some elements of the intersection algorithm can be tweaked as well:

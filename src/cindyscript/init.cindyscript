@@ -13,6 +13,7 @@ zoom = 2.2;
 a = 0.3;
 alpha = .7;
 aspectRatio = 1.0;
+hasTwoSides = true;
 
 //we stand at position mat*(0, 0, -2.2) and watch to (0,0,0).
 //ray(pixel, t) is the point in R^3 that lies at position t the ray behind the pixel at location pixel(vec2)
@@ -91,12 +92,17 @@ dF(p) := (p=p/zoom; (
 //because of the alpha-transparency updatecolor should be called for the intersections with large dst first
 // color is a float[4] representing RGBA with premultiplied alpha
 updatecolor(pixel, dst, color) := (
-  regional(x, normal);
+  regional(x, normal, dr);
   x = ray(pixel, dst); //the intersection point in R^3
   color = (1 - alpha) * color;
         
   normal = dF(x);
   normal = normal / |normal|;
+
+  if(hasTwoSides == false,
+    dr = ray(pixel,1)-ray(pixel,0);
+    if(normal*dr>0, normal=-normal);
+  );
 
   colorHit = (0., 0., 0.);
   forall(1..length(lightdirs),
