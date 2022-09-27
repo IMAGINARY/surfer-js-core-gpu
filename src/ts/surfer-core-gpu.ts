@@ -120,7 +120,7 @@ export default class SurferCoreGpu {
         mousedown: csMouseDown,
         mouseup: csMouseUp,
       },
-      animation: { autoplay: true },
+      animation: { autoplay: false },
       use: ['CindyGL', 'symbolic', 'surfer-js-core-gpu'],
       ports: [
         {

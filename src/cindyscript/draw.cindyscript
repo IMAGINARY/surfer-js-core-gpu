@@ -68,3 +68,6 @@ colorplot(
 ); //render the scene. # is the pixel coordinate
 
 grestore();
+
+// loop animation if there is motion (and we are not dragging), otherwise stop
+if(dragging % |(dx,dy)|>.0001, playanimation(), pauseanimation());
