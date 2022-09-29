@@ -25,6 +25,10 @@
   "browserslist": [
     "> 0.2% and not dead and supports webgl2"
   ],
+  "files": [
+    "dist/**/*",
+    "vendor/**/*"
+  ],
   "source": "src/ts/index.ts",
   "main": "dist/surfer-core-gpu.js",
   "module": "dist/surfer-core-gpu.mjs",
