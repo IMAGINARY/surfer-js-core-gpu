@@ -23,26 +23,9 @@ mat = mat * (
 
 
 //configuration for the lights in the scene. A light has a position, a gamma-parameter for its shininess and a color
-lightdirs = [
-    ray((.0, .0), -100), //enlights parts of the surface which normal points away from the camera
-    ray((.0, .0), -100),
-    ray((.0, .0), 100), //Has an effect, if the normal of the surface points to the camera
-    ray((.0, .0), 100),
-    (-10, 10, -2.),
-    (10, -8, 3.)
-];
-
-gamma = [1, 10, 1, 10, 5, 5];
-
-        
-colors = [
-    (.3, .5, 1.),
-    (1, 2, 2) / 2,
-    (1., 0.2, 0.1),
-    (2, 2, 1) / 2,
-    .9 * (.7, .8, .3),
-    .9 * (.6, .1, .6)
-];
+lightdirs = apply(getCameraSpaceLightDirections(),mat * #) ++ getSurfaceSpaceLightDirections();
+gamma = getLightGammas();
+colors = getLightColors();
 
 
 // translucent surface: find all roots from back to front

@@ -50,6 +50,62 @@ s.getTwoSided();
 // false
 ```
 
+Basic adjustment to the illumination model are possible:
+
+```typescript
+import Montag from './montag';
+
+const lights = [
+  {
+    // light emulating a front side material #1
+    direction: [0, 0, -1],
+    color: [0.3, 0.5, 1],
+    gamma: 1,
+    cameraSpace: true,
+  },
+  {
+    // light emulating a front side material #2
+    direction: [0, 0, -1],
+    color: [0.5, 1, 1],
+    gamma: 10,
+    cameraSpace: true,
+  },
+  {
+    // light emulating a back side material #1
+    direction: [0, 0, 1],
+    color: [1, 0.2, 0.1],
+    gamma: 1,
+    cameraSpace: true,
+  },
+  {
+    // light emulating a back side material #2
+    direction: [0, 0, 1],
+    color: [1, 1, 0.5],
+    gamma: 10,
+    cameraSpace: true,
+  },
+  {
+    // light that is fixed in the scene #1
+    direction: [-10, 10, -2],
+    color: [0.63, 0.72, 0.27],
+    gamma: 5,
+    cameraSpace: false,
+  },
+  {
+    // light that is fixed in the scene #2
+    direction: [10, -8, 3],
+    color: [0.54, 0.09, 0.54],
+    gamma: 5,
+    cameraSpace: false,
+  },
+];
+
+// Aaron Montag's custom illumination model
+const Montag = SurferCoreGpu.IlluminationModels.Montag;
+
+s.setIlluminationModel(new Montag(lights));
+```
+
 Some elements of the intersection algorithm can be tweaked as well:
 
 ```typescript

@@ -7,6 +7,8 @@ import csMouseUp from 'bundle-text:../cindyscript/mouseup.cindyscript';
 
 import PolynomialInterpolation from './intersection-algorithms/polynomial-interpolation';
 
+import Montag from './illumination-models/montag';
+
 const csInit = `${csInitPrefix}; csInitDone();`;
 
 const cdyInstanceDataMap = new Map<
@@ -26,6 +28,7 @@ CindyJS.registerPlugin(1, 'surfer-js-core-gpu', (api) => {
 });
 
 type IntersectionAlgorithm = PolynomialInterpolation;
+type IlluminationModel = Montag;
 
 export default class SurferCoreGpu {
   protected readonly api: CindyJS.ApiV1;
@@ -37,6 +40,8 @@ export default class SurferCoreGpu {
   public readonly canvas: HTMLCanvasElement;
 
   protected intersectionAlgorithm: IntersectionAlgorithm;
+
+  protected illumnimationModel: IlluminationModel;
 
   protected expression = 'x^2 - 1';
 
@@ -54,6 +59,12 @@ export default class SurferCoreGpu {
     PolynomialInterpolation,
   };
 
+  public static readonly IlluminationModels: {
+    readonly Montag: typeof Montag;
+  } = {
+    Montag,
+  };
+
   private constructor(
     api: CindyJS.ApiV1,
     element: HTMLElement,
@@ -66,11 +77,16 @@ export default class SurferCoreGpu {
 
     const interpolationNodeGenerator =
       PolynomialInterpolation.nodeGeneratorChebyshev();
-    this.intersectionAlgorithm = new PolynomialInterpolation(interpolationNodeGenerator, 7);
+    this.intersectionAlgorithm = new PolynomialInterpolation(
+      interpolationNodeGenerator,
+      7,
+    );
+    this.illumnimationModel = new Montag();
 
     this.defineCindyScriptFunctions();
 
     this.setIntersectionAlgorithm(this.intersectionAlgorithm);
+    this.setIlluminationModel(this.illumnimationModel);
     this.setExpression(this.expression);
     this.setTwoSided(this.twoSided);
     this.setAlpha(this.alpha);
@@ -86,21 +102,77 @@ export default class SurferCoreGpu {
       ctype: 'list',
       value: a.map((e) => ({ ctype: 'number', value: { real: e, imag: 0 } })),
     });
-    const getInterpolationNodesCS = (args: unknown[]) => {
-      const degree = this.api.evaluateAndVal<CindyJS.Number>(args[0]).value
-        .real;
-      const nodes = this.getIntersectionAlgorithm().generateNodes(degree);
-      return toCSTypeListOfNumbers(nodes);
+
+    const toCSTypeListOfListOfNumbers = (aa: number[][]) => ({
+      ctype: 'list',
+      value: aa.map((a) => toCSTypeListOfNumbers(a)),
+    });
+
+    const defineGetInterpolationNodes = () => {
+      const getInterpolationNodesCS = (args: unknown[]) => {
+        const degree = this.api.evaluateAndVal<CindyJS.Number>(args[0]).value
+          .real;
+        const nodes = this.getIntersectionAlgorithm().generateNodes(degree);
+        return toCSTypeListOfNumbers(nodes);
+      };
+      this.api.defineFunction(
+        'getInterpolationNodes',
+        1,
+        getInterpolationNodesCS,
+      );
     };
-    this.api.defineFunction(
-      'getInterpolationNodes',
-      1,
-      getInterpolationNodesCS,
-    );
+
+    const defineGetIlluminationData = () => {
+      const getCameraSpaceLightDirections = () =>
+        toCSTypeListOfListOfNumbers(
+          this.getIlluminationModel()
+            .getLights()
+            .filter(({ cameraSpace }) => cameraSpace)
+            .map(({ direction }) => direction),
+        );
+      const getSurfaceSpaceLightDirections = () =>
+        toCSTypeListOfListOfNumbers(
+          this.getIlluminationModel()
+            .getLights()
+            .filter(({ cameraSpace }) => !cameraSpace)
+            .map(({ direction }) => direction),
+        );
+      const getLightColors = () =>
+        toCSTypeListOfListOfNumbers(
+          this.getIlluminationModel()
+            .getLights()
+            .map(({ color }) => color),
+        );
+      const getLightGammas = () =>
+        toCSTypeListOfNumbers(
+          this.getIlluminationModel()
+            .getLights()
+            .map(({ gamma }) => gamma),
+        );
+      this.api.defineFunction(
+        'getCameraSpaceLightDirections',
+        0,
+        getCameraSpaceLightDirections,
+      );
+      this.api.defineFunction(
+        'getSurfaceSpaceLightDirections',
+        0,
+        getSurfaceSpaceLightDirections,
+      );
+      this.api.defineFunction('getLightColors', 0, getLightColors);
+      this.api.defineFunction('getLightGammas', 0, getLightGammas);
+    };
+
+    defineGetInterpolationNodes();
+    defineGetIlluminationData();
   }
 
   getIntersectionAlgorithm(): IntersectionAlgorithm {
     return this.intersectionAlgorithm;
+  }
+
+  getIlluminationModel(): IlluminationModel {
+    return this.illumnimationModel;
   }
 
   getExpression(): string {
@@ -163,6 +235,11 @@ export default class SurferCoreGpu {
 
   setIntersectionAlgorithm(algorithm: IntersectionAlgorithm) {
     this.intersectionAlgorithm = algorithm;
+    this.cdy.evokeCS(`init();`);
+  }
+
+  setIlluminationModel(model: IlluminationModel) {
+    this.illumnimationModel = model;
     this.cdy.evokeCS(`init();`);
   }
 
