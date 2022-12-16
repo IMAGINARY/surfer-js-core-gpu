@@ -138,13 +138,8 @@ The `SurferGpuCore` object exposes two internal elements:
 ## Bundled CindyJS
 
 This package uses the [CindyJS](https://cindyjs.org) package internally. Since
-CindyJS is not published through NPM, you can either add the libraries from the
-`vendor` folder to your project manually (via `<script>` tags), or you change
-your imports to
-
-```typescript
-import '@imaginary-maths/surfer-core-gpu/dist/surfer-core-gpu-bundled-cindyjs';
-```
+CindyJS is not published through NPM, you can add the libraries from the
+`vendor` folder to your project manually (via `<script>` tags).
 
 # Build
 

@@ -32,10 +32,6 @@
   "source": "src/ts/index.ts",
   "main": "dist/surfer-core-gpu.js",
   "module": "dist/surfer-core-gpu.mjs",
-  "target-bundled-cindyjs": "dist/surfer-core-gpu-bundled-cindyjs.js",
-  "target-bundled-cindyjs-min": "dist/surfer-core-gpu-bundled-cindyjs.min.js",
-  "target-bundled-cindyjs-module": "dist/surfer-core-gpu-bundled-cindyjs.mjs",
-  "target-bundled-cindyjs-module-min": "dist/surfer-core-gpu-bundled-cindyjs.min.mjs",
   "types": "dist/surfer-core-gpu.d.ts",
   "targets": {
     "main": {
@@ -51,50 +47,6 @@
       "context": "browser",
       "optimize": true,
       "isLibrary": true,
-      "includeNodeModules": true,
-      "engines": {
-        "browsers": "> 0.2% and not dead and supports webgl2"
-      }
-    },
-    "target-bundled-cindyjs": {
-      "source": "src/ts/index-bundled-cindyjs.ts",
-      "context": "browser",
-      "isLibrary": true,
-      "outputFormat": "commonjs",
-      "optimize": false,
-      "includeNodeModules": true,
-      "engines": {
-        "browsers": "> 0.2% and not dead and supports webgl2"
-      }
-    },
-    "target-bundled-cindyjs-min": {
-      "source": "src/ts/index-bundled-cindyjs.ts",
-      "context": "browser",
-      "isLibrary": true,
-      "outputFormat": "commonjs",
-      "optimize": true,
-      "includeNodeModules": true,
-      "engines": {
-        "browsers": "> 0.2% and not dead and supports webgl2"
-      }
-    },
-    "target-bundled-cindyjs-module": {
-      "source": "src/ts/index-bundled-cindyjs.ts",
-      "context": "browser",
-      "isLibrary": true,
-      "outputFormat": "esmodule",
-      "optimize": false,
-      "includeNodeModules": true,
-      "engines": {
-        "browsers": "> 0.2% and not dead and supports webgl2"
-      }
-    },
-    "target-bundled-cindyjs-module-min": {
-      "source": "src/ts/index-bundled-cindyjs.ts",
-      "context": "browser",
-      "isLibrary": true,
-      "outputFormat": "esmodule",
-      "optimize": true,
       "includeNodeModules": true,
       "engines": {
         "browsers": "> 0.2% and not dead and supports webgl2"

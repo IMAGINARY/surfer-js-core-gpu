@@ -10,12 +10,27 @@ declare class PolynomialInterpolation {
     static nodeGeneratorEquidistant(): NodeGenerator;
     static nodeGeneratorChebyshev(): NodeGenerator;
 }
+type Vector3 = [number, number, number];
+type Light = {
+    direction: Vector3;
+    color: Vector3;
+    gamma: number;
+    cameraSpace: boolean;
+};
+declare class Montag {
+    protected lights: Light[];
+    constructor(lights?: Light[]);
+    getLights(): Light[];
+}
+type IntersectionAlgorithm = PolynomialInterpolation;
+type IlluminationModel = Montag;
 export class SurferCoreGpu {
     protected readonly api: CindyJS.ApiV1;
     protected readonly cdy: CindyJS;
     readonly element: HTMLElement;
     readonly canvas: HTMLCanvasElement;
-    protected algorithm: PolynomialInterpolation;
+    protected intersectionAlgorithm: IntersectionAlgorithm;
+    protected illumnimationModel: IlluminationModel;
     protected expression: string;
     protected twoSided: boolean;
     protected alpha: number;
@@ -23,11 +38,15 @@ export class SurferCoreGpu {
     protected parameters: {
         [key: string]: number;
     };
-    static readonly Algorithms: {
+    static readonly IntersectionAlgorithms: {
         readonly PolynomialInterpolation: typeof PolynomialInterpolation;
     };
+    static readonly IlluminationModels: {
+        readonly Montag: typeof Montag;
+    };
     private constructor();
-    getAlgorithm(): PolynomialInterpolation;
+    getIntersectionAlgorithm(): IntersectionAlgorithm;
+    getIlluminationModel(): IlluminationModel;
     getExpression(): string;
     getTwoSided(): boolean;
     getAlpha(): number;
@@ -42,7 +61,8 @@ export class SurferCoreGpu {
     setAlpha(alpha: number): this;
     setZoom(zoom: number): this;
     setParameter(name: string, value: number): this;
-    setAlgorithm(algorithm: PolynomialInterpolation): void;
+    setIntersectionAlgorithm(algorithm: IntersectionAlgorithm): void;
+    setIlluminationModel(model: IlluminationModel): void;
     static create(container: HTMLElement, width?: number, height?: number): Promise<SurferCoreGpu>;
 }
 export default SurferCoreGpu;
