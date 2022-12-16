@@ -5,7 +5,7 @@ import csDraw from 'bundle-text:../cindyscript/draw.cindyscript';
 import csMouseDown from 'bundle-text:../cindyscript/mousedown.cindyscript';
 import csMouseUp from 'bundle-text:../cindyscript/mouseup.cindyscript';
 
-import PolynomialInterpolation from './algorithms/polynomial-interpolation';
+import PolynomialInterpolation from './intersection-algorithms/polynomial-interpolation';
 
 const csInit = `${csInitPrefix}; csInitDone();`;
 
@@ -25,6 +25,8 @@ CindyJS.registerPlugin(1, 'surfer-js-core-gpu', (api) => {
   api.defineFunction('csInitDone', 0, () => onInit(api));
 });
 
+type IntersectionAlgorithm = PolynomialInterpolation;
+
 export default class SurferCoreGpu {
   protected readonly api: CindyJS.ApiV1;
 
@@ -34,7 +36,7 @@ export default class SurferCoreGpu {
 
   public readonly canvas: HTMLCanvasElement;
 
-  protected algorithm: PolynomialInterpolation;
+  protected intersectionAlgorithm: IntersectionAlgorithm;
 
   protected expression = 'x^2 - 1';
 
@@ -46,7 +48,7 @@ export default class SurferCoreGpu {
 
   protected parameters: { [key: string]: number } = {};
 
-  public static readonly Algorithms: {
+  public static readonly IntersectionAlgorithms: {
     readonly PolynomialInterpolation: typeof PolynomialInterpolation;
   } = {
     PolynomialInterpolation,
@@ -64,11 +66,11 @@ export default class SurferCoreGpu {
 
     const interpolationNodeGenerator =
       PolynomialInterpolation.nodeGeneratorChebyshev();
-    this.algorithm = new PolynomialInterpolation(interpolationNodeGenerator, 7);
+    this.intersectionAlgorithm = new PolynomialInterpolation(interpolationNodeGenerator, 7);
 
     this.defineCindyScriptFunctions();
 
-    this.setAlgorithm(this.algorithm);
+    this.setIntersectionAlgorithm(this.intersectionAlgorithm);
     this.setExpression(this.expression);
     this.setTwoSided(this.twoSided);
     this.setAlpha(this.alpha);
@@ -87,7 +89,7 @@ export default class SurferCoreGpu {
     const getInterpolationNodesCS = (args: unknown[]) => {
       const degree = this.api.evaluateAndVal<CindyJS.Number>(args[0]).value
         .real;
-      const nodes = this.getAlgorithm().generateNodes(degree);
+      const nodes = this.getIntersectionAlgorithm().generateNodes(degree);
       return toCSTypeListOfNumbers(nodes);
     };
     this.api.defineFunction(
@@ -97,8 +99,8 @@ export default class SurferCoreGpu {
     );
   }
 
-  getAlgorithm(): PolynomialInterpolation {
-    return this.algorithm;
+  getIntersectionAlgorithm(): IntersectionAlgorithm {
+    return this.intersectionAlgorithm;
   }
 
   getExpression(): string {
@@ -159,8 +161,8 @@ export default class SurferCoreGpu {
     return this;
   }
 
-  setAlgorithm(algorithm: PolynomialInterpolation) {
-    this.algorithm = algorithm;
+  setIntersectionAlgorithm(algorithm: IntersectionAlgorithm) {
+    this.intersectionAlgorithm = algorithm;
     this.cdy.evokeCS(`init();`);
   }
 

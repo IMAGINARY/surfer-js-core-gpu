@@ -54,7 +54,7 @@ Some elements of the intersection algorithm can be tweaked as well:
 
 ```typescript
 const PolynomialInterpolation =
-  SurferCoreGpu.Algorithms.PolynomialInterpolation;
+  SurferCoreGpu.IntersectionAlgorithms.PolynomialInterpolation;
 
 // For some non-algebraic functions, Chebyshev nodes yield better results.
 // Explictly set the maximum degree of the interpolating function for experimentation.
